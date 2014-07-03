@@ -1,0 +1,17 @@
+﻿@model MvcApplication9.Models.ChatPackage
+
+
+@{
+    ViewBag.Title = "Start";
+}
+
+<form class="enter-message">
+<textarea name="message"></textarea>
+	<input name="username" type="hidden" value="@Model.Username"/>
+	<input name="companyname" type="hidden" value="@Model.Companyname"/>
+	<input type="submit" />
+</form>
+
+<div class="messages">
+<div class="message">@Model.Username from @Model.Companyname says: @Model.Message</div>
+</div>

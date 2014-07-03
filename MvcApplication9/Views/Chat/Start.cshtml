@@ -1,4 +1,4 @@
-﻿@model MvcApplication9.Models.ChatPackage
+﻿@model MvcApplication9.Models.ChatRoomView
 
 
 @{
@@ -13,5 +13,7 @@
 </form>
 
 <div class="messages">
-<div class="message">@Model.Username from @Model.Companyname says: @Model.Message</div>
+@foreach(var message in Model.Messages) {
+	<div class="message">@Model.Username from @Model.Companyname says: @message</div>
+}
 </div>

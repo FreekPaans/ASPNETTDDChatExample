@@ -9,7 +9,10 @@ namespace MvcApplication9.Models {
 		public string Companyname{get;set;}
 	}
 
-	public class ChatPackage : ChatUser{
-		public string Message{get; set;}		
+	public class ChatRoomView {
+		public string Username{get;set;}
+		public string Companyname{get;set;}
+		public ICollection<string> Messages{get; set;}		
 	}
+
 }

@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium;
+using System.Collections.Generic;
 
 namespace MvcApplication9.Tests {
 	[TestClass]
@@ -17,34 +18,61 @@ namespace MvcApplication9.Tests {
 		}
 
 		[TestMethod]
+		public void two_messages()
+		{
+			RegisterFromCompany("freek", "microsoft");
+			
+			SubmitMessage("hello");
+			SubmitMessage("goodbye");
+
+			AssertMessageVisible("freek","microsoft", "hello");
+			AssertMessageVisible("freek","microsoft", "goodbye");
+		}
+		
+		[TestMethod]
 		public void register_and_say_poo_with_different_company_name() {
-			RegisterFromCompanyAndSay("freek", "microsoft", "pooa");				
+			RegisterFromCompanyAndSayAndVerifyMessageVisible("freek", "microsoft", "pooa");				
 		}
 
 		[TestMethod]
 		public void register_and_say_hi_with_different_company_name() {
-			RegisterFromCompanyAndSay("freek", "microsoft", "hi");				
+			RegisterFromCompanyAndSayAndVerifyMessageVisible("freek", "microsoft", "hi");				
 		}
 
 		[TestMethod]
 		public void register_and_say_hi() {
-			RegisterFromCompanyAndSay("freek", "infi", "hi");						
+			RegisterFromCompanyAndSayAndVerifyMessageVisible("freek", "infi", "hi");						
 		}
 		
-		private void RegisterFromCompanyAndSay(string name, string company, string message) {
-			new RegistrationForm(_webDriver, ".registration-form")
-				.EnterUsername(name)
-				.EnterCompanyName(company)
-				.Submit();	
+		private void RegisterFromCompanyAndSayAndVerifyMessageVisible(string username, string company, string message) {
+			RegisterFromCompany(username,company);
 			
-			SubmitMessage(message);			
-			Assert.AreEqual(String.Format("freek from {0} says: {1}", company, message), FindFirstMessageElement().Text);
+			SubmitMessage(message);
+			AssertMessageVisible(username,company,message);
+		}
+
+		private static void AssertMessageVisible(string username, string company,string message) {
+			var expectedMessage = String.Format("{2} from {0} says: {1}",company,message,username);
+			foreach(var element in FindMessageElements()) {
+				if(element.Text == expectedMessage) {
+					return;
+				}
+			}
+
+			Assert.Fail(string.Format("Message with text '{0}' not found", expectedMessage));
+		}
+
+		private static void RegisterFromCompany(string name,string company) {
+			new RegistrationForm(_webDriver,".registration-form")
+						 .EnterUsername(name)
+						 .EnterCompanyName(company)
+						 .Submit();
 		}
 
 		
 
-		private static IWebElement FindFirstMessageElement() {
-			return _webDriver.FindElement(By.CssSelector(".messages .message"));
+		private static ICollection<IWebElement> FindMessageElements() {
+			return _webDriver.FindElements(By.CssSelector(".messages .message"));
 		}
 
 		

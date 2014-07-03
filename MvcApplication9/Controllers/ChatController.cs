@@ -9,11 +9,17 @@ namespace MvcApplication9.Controllers
 {
     public class ChatController : Controller
     {
+		static List<string> _messages =new List<string>();
 
-        public ActionResult Start(ChatPackage package)
+        public ActionResult Start(ChatUser user, string message)
         {
-            return View(package);
-        }
+			_messages.Add(message);
 
+		    return View(new ChatRoomView { 
+				Companyname = user.Companyname,
+				Username = user.Username,
+				Messages = _messages
+			});
+        }
     }
 }
